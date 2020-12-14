@@ -27,7 +27,7 @@
         vector.x = radius * Math.cos(u);
         vector.y = radius * Math.sin(u);
         vector.z = a * Math.pow(2.71, (-radius * n)) * Math.sin(w * radius + phi);
-         return vector;
+        return vector;
     }
 
 	// init renderer
@@ -115,19 +115,14 @@
 	euler.set( -1, -1, 0, 'YXZ' );
 	mesh.quaternion.setFromEuler( euler );
 
-
-		// mesh.position.y	= 0.1;
 	arWorldRoot.add( mesh );
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		render the whole thing on the page
-	//////////////////////////////////////////////////////////////////////////////////
-	var stats = new Stats();
-	document.body.appendChild( stats.dom );
+	// var stats = new Stats();
+	// document.body.appendChild( stats.dom );
 	// render the scene
 	onRenderFcts.push(function(){
 		renderer.render( scene, camera );
-		stats.update();
+		// stats.update();
 	})
 
 </script>
