@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<!-- three.js library -->
+
 <script src=https://mrdoob.github.io/three.js/build/three.min.js ></script>
 <script src=https://mrdoob.github.io/three.js/examples/js/libs/stats.min.js ></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
@@ -41,13 +41,10 @@
 	renderer.domElement.style.left = '0px'
 	document.body.appendChild( renderer.domElement );
 
-	// array of functions for the rendering loop
 	var onRenderFcts= [];
 
-	// init scene and camera
 	var scene	= new THREE.Scene();
 
-	// Create a camera
 	var camera = new THREE.Camera();
 	scene.add(camera);
 
@@ -59,7 +56,6 @@
 		onResize()
 	})
 
-	// handle resize
 	window.addEventListener('resize', function(){
 		onResize()
 	})
@@ -70,12 +66,7 @@
 			arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas)
 		}
 	}
-	////////////////////////////////////////////////////////////////////////////////
-	//          initialize arToolkitContext
-	////////////////////////////////////////////////////////////////////////////////
 
-
-	// create atToolkitContext
 	var arToolkitContext = new THREEx.ArToolkitContext({
 		cameraParametersUrl: 'camera_para.dat',
 		detectionMode: 'mono',
@@ -83,33 +74,24 @@
 		canvasWidth: 80*3,
 		canvasHeight: 60*3,
 	})
-	// initialize it
+
 	arToolkitContext.init(function onCompleted(){
-		// copy projection matrix to camera
 		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
 	})
 
-	// update artoolkit on every frame
 	onRenderFcts.push(function(){
 		if( arToolkitSource.ready === false )	return
 
 		arToolkitContext.update( arToolkitSource.domElement )
 	})
 
-
-	////////////////////////////////////////////////////////////////////////////////
-	//          Create a ArMarkerControls
-	////////////////////////////////////////////////////////////////////////////////
-
 	var markerRoot = new THREE.Group
 	scene.add(markerRoot)
 	var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
 		type : 'pattern',
 		patternUrl : 'mypattern.patt'
-		// patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji'
 	})
 
-	// build a smoothedControls
 	var smoothedRoot = new THREE.Group()
 	scene.add(smoothedRoot)
 	var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
@@ -120,9 +102,6 @@
 	onRenderFcts.push(function(delta){
 		smoothedControls.update(markerRoot)
 	})
-	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object in the scene
-	//////////////////////////////////////////////////////////////////////////////////
 
 	var arWorldRoot = smoothedRoot
 
@@ -151,19 +130,5 @@
 		stats.update();
 	})
 
-	// run the rendering loop
-	var lastTimeMsec= null
-	requestAnimationFrame(function animate(nowMsec){
-		// keep looping
-		requestAnimationFrame( animate );
-		// measure time
-		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
-		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
-		lastTimeMsec	= nowMsec
-		// call each update function
-		onRenderFcts.forEach(function(onRenderFct){
-			onRenderFct(deltaMsec/1000, nowMsec/1000)
-		})
-	})
 </script>
 </body>
